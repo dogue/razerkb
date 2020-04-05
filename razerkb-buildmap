@@ -1,0 +1,35 @@
+#!/bin/env python
+
+import openrazer.client
+import json
+
+# Get the keyboard device
+kbd = openrazer.client.DeviceManager().devices[0]
+
+# Get the total number of rows and columns,
+# and create a blank dict for the keys
+rows = kbd.fx.advanced.rows
+cols = kbd.fx.advanced.cols
+keys = {}
+
+# Light each key one by one and request the user
+# to input the definition for the key
+for row in range(rows):
+  for col in range(1, cols):
+    kbd.fx.advanced.matrix[row, col] = [255, 255, 255]
+    kbd.fx.advanced.draw()
+    key = input("Which key is currently lit? If none, press enter: ".format(row, col)).upper()
+
+    # If we didn't get a definition, skip that row/col pair
+    if key != '':
+      color = input("{} color: ".format(key)).upper()
+      keys[key] = [row, col, color]
+
+    kbd.fx.advanced.matrix[row, col] = [0, 0, 0]
+    kbd.fx.advanced.draw()
+
+# Write the keymap to a file as JSON
+output = json.dumps(keys)
+f = open("color-map.json", "w")
+f.write(output)
+f.close()

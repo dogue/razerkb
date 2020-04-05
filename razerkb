@@ -1,0 +1,46 @@
+#!/bin/env python
+
+import argparse
+import openrazer.client
+import json
+
+parser = argparse.ArgumentParser(description = "Configure RGB lighting for Razer keyboards")
+group = parser.add_mutually_exclusive_group()
+group.add_argument('-l', '--load', metavar = 'FILE', help = "Load a color map from JSON file")
+group.add_argument('-s', '--set', metavar = 'RGB' ,help = "Set a global static color (hexadecimal)")
+args = parser.parse_args()
+
+deviceManager = openrazer.client.DeviceManager()
+keyboard = deviceManager.devices[0]
+
+if(args.load):
+  keyboard.fx.none()
+
+  # Load keymap color profile
+  with open(args.load) as f:
+    keys = json.load(f)
+
+    #keyboard.fx.none()
+
+  # Load color definitions
+  with open('color-definitions.json') as f:
+    color = json.load(f)
+
+  # Loop through all keys in the map and set the color
+  for key in keys:
+    row = keys[key][0]
+    col = keys[key][1]
+    hue = keys[key][2]
+
+    keyboard.fx.advanced.matrix[row, col] = color[hue]
+
+  # Draw the settings out to hardware
+  keyboard.fx.advanced.draw()
+
+if(args.set):
+  hex = args.set
+  R = int(hex[0] + hex[1], 16)
+  G = int(hex[2] + hex[3], 16)
+  B = int(hex[4] + hex[5], 16)
+
+  keyboard.fx.static(R, G, B)
