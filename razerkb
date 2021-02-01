@@ -5,7 +5,7 @@ import openrazer.client
 import json
 
 parser = argparse.ArgumentParser(description = "Configure RGB lighting for Razer keyboards")
-group = parser.add_mutually_exclusive_group()
+group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-l', '--load', metavar = 'FILE', help = "Load a color map from JSON file")
 group.add_argument('-s', '--set', metavar = 'RGB' ,help = "Set a global static color (hexadecimal)")
 args = parser.parse_args()
