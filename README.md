@@ -13,7 +13,7 @@ git clone git@github.com:dogue/razerkb.git
 ## Usage
 
 ```bash
-usage: razerkb [-h] [-l FILE | -s RGB]
+usage: razerkb [-h] (-l FILE | -s RGB)
 
 Configure RGB lighting for Razer keyboards
 
